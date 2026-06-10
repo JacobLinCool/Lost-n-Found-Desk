@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A calm, private lost-and-found desk for events. Staff log found items, owners describe what they lost, and staff confirm every return in person." />
+    <title>Lost &amp; Found Desk</title>
+    <script>
+      // Apply the saved (or OS) theme before first paint to avoid a flash.
+      (function () {
+        try {
+          var pref = localStorage.getItem('lfd_theme');
+          var dark = pref === 'dark' || (pref !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

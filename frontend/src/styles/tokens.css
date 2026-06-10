@@ -1,0 +1,159 @@
+/* ---------------------------------------------------------------------------
+   Design tokens — "Field Desk"
+   A lost-and-found desk is paper, ink, and a brass-eyelet luggage tag. The
+   palette follows: warm paper surfaces, near-black ink for primary actions,
+   one indigo for interactive accents, brass strictly for "attention/staff"
+   semantics, red strictly for destructive/error, green strictly for success.
+   Every text/background pair here meets WCAG AA (≥ 4.5:1 for body text).
+--------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg: #f6f4ee;            /* warm paper */
+  --surface: #fffefb;       /* cards */
+  --surface-2: #f1efe7;     /* wells, inset panels */
+  --surface-3: #e9e6dc;     /* hover wells */
+
+  /* Ink */
+  --ink: #1f1d1a;           /* 15.2:1 on --surface */
+  --ink-2: #4f4b43;         /* secondary text, 8.6:1 */
+  --ink-3: #6b665d;         /* muted text, 5.5:1 */
+
+  /* Lines (decorative hairlines vs. form-control boundaries — inputs need
+     ≥3:1 against their surface per WCAG 1.4.11, cards don't) */
+  --line: #e0dcd0;
+  --line-strong: #c8c3b4;
+  --line-input: #8d887b;
+
+  /* Interactive accent (links, focus, selection) */
+  --accent: #3f4db8;        /* 7.0:1 on --surface */
+  --accent-strong: #34409c;
+  --accent-soft: #e9ebfa;   /* selected/active backgrounds */
+  --accent-on-soft: #2c3787; /* 8.7:1 on --accent-soft */
+
+  /* Primary action = ink */
+  --btn-primary-bg: #23211d;
+  --btn-primary-bg-hover: #38352f;
+  --btn-primary-ink: #fffefb;
+
+  /* Semantic: success */
+  --ok: #1e6b46;            /* 6.0:1 on --surface */
+  --ok-soft: #e2f1e8;
+  --ok-on-soft: #175437;    /* 7.5:1 on --ok-soft */
+
+  /* Semantic: attention / staff (brass) */
+  --warn: #8a5a00;          /* 5.9:1 on --surface */
+  --warn-soft: #faf0d7;
+  --warn-on-soft: #75500a;  /* 6.0:1 on --warn-soft */
+
+  /* Semantic: danger / error */
+  --danger: #b3261e;        /* 6.3:1 on --surface */
+  --danger-soft: #fbe9e7;
+  --danger-on-soft: #8f1d16; /* 7.7:1 on --danger-soft */
+  --btn-danger-bg: #b3261e;
+  --btn-danger-bg-hover: #9a1f18;
+  --btn-danger-ink: #ffffff;
+
+  /* Focus ring */
+  --focus: #3f4db8;
+
+  /* Code chips */
+  --code-bg: #edeae0;
+  --code-ink: #3c3933;
+
+  /* Elevation — quiet, layered; never foggy */
+  --shadow-1: 0 1px 2px rgba(35, 30, 20, 0.06);
+  --shadow-2: 0 1px 2px rgba(35, 30, 20, 0.05), 0 4px 14px rgba(35, 30, 20, 0.07);
+  --shadow-3: 0 2px 4px rgba(35, 30, 20, 0.06), 0 12px 28px rgba(35, 30, 20, 0.12);
+
+  /* Radius — pills are for badges and filter chips; other controls stay grounded */
+  --r-sm: 7px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-pill: 999px;
+
+  /* Spacing scale (4px base) */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+
+  /* Type */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.855rem;
+  --text-base: 0.96rem;
+  --text-md: 1.1rem;
+  --text-lg: 1.3rem;
+  --text-xl: clamp(1.6rem, 3vw, 2.1rem);
+  --text-display: clamp(2.1rem, 5vw, 3rem);
+  --text-stat: 1.7rem;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-spring: cubic-bezier(0.3, 1.4, 0.4, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 340ms;
+}
+
+/* ---------------------------------------------------------------------------
+   Dark theme — designed, not inverted: warm near-black paper at night,
+   borders carry elevation instead of shadows, the primary button flips to
+   light ink, and every accent is re-picked for AA on dark surfaces.
+--------------------------------------------------------------------------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #141310;
+  --surface: #1d1b18;
+  --surface-2: #262420;
+  --surface-3: #2e2b26;
+
+  --ink: #ece9e1;           /* 13.5:1 on --surface */
+  --ink-2: #c3beb2;         /* 8.7:1 */
+  --ink-3: #9a958a;         /* 5.3:1 */
+
+  --line: #34312b;
+  --line-strong: #4a463d;
+  --line-input: #767061;
+
+  --accent: #a3b0f6;        /* 7.9:1 on --surface */
+  --accent-strong: #bcc6f9;
+  --accent-soft: #272b44;
+  --accent-on-soft: #c6cefb;
+
+  --btn-primary-bg: #ece9e1;
+  --btn-primary-bg-hover: #dbd7cc;
+  --btn-primary-ink: #1d1b18;
+
+  --ok: #82cda0;            /* 8.7:1 on --surface */
+  --ok-soft: #1d2f25;
+  --ok-on-soft: #a4dcbb;
+
+  --warn: #dfb566;          /* 9.2:1 on --surface */
+  --warn-soft: #2e2616;
+  --warn-on-soft: #e8c885;
+
+  --danger: #f0928b;        /* 7.3:1 on --surface */
+  --danger-soft: #3a211e;
+  --danger-on-soft: #f5b0aa;
+  --btn-danger-bg: #c2362d;
+  --btn-danger-bg-hover: #d24439;
+  --btn-danger-ink: #ffffff;
+
+  --focus: #a3b0f6;
+
+  --code-bg: #2a2823;
+  --code-ink: #d6d2c6;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 18px rgba(0, 0, 0, 0.35);
+  --shadow-3: 0 2px 4px rgba(0, 0, 0, 0.4), 0 14px 32px rgba(0, 0, 0, 0.5);
+}

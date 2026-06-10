@@ -1,0 +1,30 @@
+# Hugging Face Spaces / Gradio Server mode
+# Checked against PyPI on 2026-06-10.
+gradio==6.17.3
+spaces>=0.50.4
+fastapi>=0.136.3
+uvicorn>=0.49.0
+pydantic>=2.13.4
+python-multipart>=0.0.32
+
+# Observability (traces/metrics/logs). Defaults to console exporters; set
+# OTEL_EXPORTER_OTLP_ENDPOINT to ship OTLP, or LFD_TELEMETRY=0 to disable.
+opentelemetry-sdk>=1.27.0
+opentelemetry-api>=1.27.0
+opentelemetry-instrumentation-fastapi>=0.48b0
+opentelemetry-exporter-otlp-proto-http>=1.27.0
+
+# Models
+# MiniCPM-V-4.6 model card recommends transformers[torch]>=5.7.0 plus torchvision and av.
+# MiniCPM5-1B model card recommends transformers>=5.6, accelerate, and torch.
+transformers[torch]>=5.11.0
+accelerate>=1.13.0
+torch>=2.8.0
+torchvision>=0.27.0
+av>=17.1.0
+pillow>=12.2.0
+
+# Retrieval embeddings for large-inventory top-N shortlisting
+# (nvidia/llama-nemotron-embed-vl-1b-v2 via sentence-transformers). Optional at
+# runtime: the import is guarded and falls back to a mock embedder.
+sentence-transformers>=3.0.0
