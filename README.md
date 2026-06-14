@@ -24,7 +24,7 @@ tags:
 - **App URL:** https://build-small-hackathon-lost-found-desk.hf.space
 - **Demo video:** https://youtu.be/AsOM7K0tL-s
 - **GitHub:** https://github.com/JacobLinCool/Lost-n-Found-Desk
-- **Social post:** pending manual publication; draft is in [`docs/social-post.md`](docs/social-post.md).
+- **Social post:** https://x.com/JacobLinCool/status/2066147773481951378
 
 Lost & Found Desk is a **caption-first return desk** for conferences, event venues, gyms, coworking spaces, schools, and any front desk that accumulates forgotten bottles, badges, chargers, jackets, bags, keys, and accessories.
 

@@ -9,4 +9,4 @@ MiniCPM-V captions found items; MiniCPM5 + Nemotron Embed help staff review matc
 Demo: https://youtu.be/AsOM7K0tL-s
 Code: https://github.com/JacobLinCool/Lost-n-Found-Desk
 
-Publication note: publish this manually from the team account, then replace the pending social link in `README.md` with the live post URL.
+Published on X: https://x.com/JacobLinCool/status/2066147773481951378
