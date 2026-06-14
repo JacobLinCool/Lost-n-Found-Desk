@@ -1,114 +1,72 @@
-# Lost & Found Desk: a caption-first return desk for real-world lost items
+# Lost & Found Desk: small models for staff-controlled item return
 
 - **Demo video:** https://youtu.be/AsOM7K0tL-s
 - **Live app:** https://build-small-hackathon-lost-found-desk.hf.space
 - **GitHub:** https://github.com/JacobLinCool/Lost-n-Found-Desk
+- **Social post:** https://x.com/JacobLinCool/status/2066147773481951378
 
-Lost & Found Desk is a small-model workflow for a problem every event venue eventually has: a table full of bottles, badges, chargers, jackets, keys, and bags, plus a stream of vague "I lost something" messages.
+Lost & Found Desk explores a narrow but common operational problem: how a temporary front desk can return lost objects while preserving private inventory evidence and reducing manual comparison work. Conferences, gyms, schools, coworking spaces, and community events all accumulate the same objects: bottles, chargers, badges, bags, jackets, keys, and small personal accessories. The work is ordinary, but it is also time-sensitive and privacy-sensitive. A claimant may say only "I lost a black bottle near room B," while staff may have dozens of visually similar objects to review.
 
-The app turns that mess into a return desk. Staff photograph one found item at a time. MiniCPM-V writes a searchable caption. A claimant reports their lost item through a private assistant that asks only for missing details and can accept a photo of the claimant's own item. Staff then review candidate matches in a password-gated console, send safe follow-up messages, and record the offline handoff.
+The project argues for a small, staff-controlled workflow. A vision-language model turns each found item photo into a readable caption. A claimant-facing assistant gathers a private description in the claimant's own language. A staff-only review surface then combines the claim transcript, generated summaries, item captions, and retrieval signals to surface plausible candidates for human confirmation. The system uses AI to reduce search cost; ownership remains a staff decision made offline.
 
-The important part is what the app refuses to do. It never exposes inventory photos to claimants. It never shows ranked candidates to the public. It never says "this is yours." AI narrows the work for humans; staff still confirm ownership offline.
+## Problem and Scope
 
-## The problem
+Lost-and-found work has two sources of friction. The first is information quality: claimants often remember partial details, and staff often record found items under pressure. The second is information exposure: a system that reveals inventory photos or candidate matches can teach a dishonest claimant what to say. A useful design therefore needs to make the inventory searchable for staff while keeping candidate evidence out of the public claim flow.
 
-Lost-and-found work is not technically glamorous, but it is real operational friction. After a conference, gym class, school day, coworking event, or club meetup, a front desk may have dozens of objects and only a few seconds to handle each one. The incoming descriptions are often incomplete:
+Lost & Found Desk focuses on small and medium event inventories, where one staff member can photograph items one at a time and where the main bottleneck is comparison, not warehouse-scale indexing. This scope keeps the product close to the real front-desk workflow: quick intake, private claims, staff review, and an auditable handoff log.
 
-```text
-I lost a black bottle, maybe near room B.
-```
+## Design Claim
 
-That creates repeated work: ask follow-up questions, look through photos, compare descriptions, avoid leaking item details, and prevent accidental returns. Lost & Found Desk is built for that narrow workflow.
+The central design claim is that caption-first intake is a practical unit of work for lost-and-found operations. One item photo produces one item record. The caption becomes a bridge between visual evidence, multilingual owner descriptions, staff review, and later reporting. This choice removes the need for a brittle object-segmentation step during the hackathon build and gives staff a record they can read, search, and correct.
 
-## The solution
+The system follows three principles:
 
-The product has three surfaces:
+- **One item, one record.** Staff photograph each object separately, so the inventory aligns with how returns are actually handled.
+- **Private claimant intake.** Claimants describe their item and may upload a reference photo while inventory photos, ranked candidates, and staff reasoning remain private.
+- **Staff-controlled handoff.** Model outputs support comparison and message drafting; staff confirm identity and record the return offline.
 
-- A public home page where an organizer creates an independent desk for an event.
-- A claimant flow at `/e/{event_id}` where the owner describes the lost item and saves a private resume link.
-- A staff console at `/e/{event_id}/staff` where staff add found items, review reports, match candidates, message claimants, and log returns.
+## User Experience
 
-The workflow is deliberately small:
+The staff workflow starts by creating an event desk. The app generates a public claim link and a staff password. Staff then add found items by uploading one photo per object, with optional context such as location or notes. MiniCPM-V produces a caption and a privacy note when visible identifying text appears. The item enters a private event inventory.
 
-```text
-one item photo
-  -> MiniCPM-V caption
-  -> private event inventory
-  -> Claim Assistant intake
-  -> MiniCPM5 staff-side reasoning
-  -> staff review
-  -> offline handoff log
-```
+The claimant workflow is a short conversation. The assistant asks for missing categories of information such as color, location, distinctive marks, or supporting photos. Its questions stay at the category level until the claimant supplies specific details. A claimant can resume the conversation through a private link, and staff can reply while the inventory remains private.
 
-For larger inventories, the app uses `nvidia/llama-nemotron-embed-vl-1b-v2` to shortlist items by multilingual vision-language similarity before the staff-side model sees the candidate set. That lets a Traditional Chinese or English claim retrieve an English-captioned item without exposing any candidate details to the claimant.
+The staff review workflow brings the two sides together. Staff see the claim summary, conversation, claimant photo captions, candidate items, match reasons, and a safe draft message. A return is logged only after staff confirm the item offline.
 
-## User experience
+## Technical Approach
 
-For staff, the app is a focused desk console:
+Lost & Found Desk is deployed as a Gradio Server app with a compiled Svelte interface. The backend provides event, claim, upload, staff-auth, reporting, and model services; the frontend presents the experience as a task-focused product surface. On Hugging Face ZeroGPU, model-heavy actions run through Gradio API routes so the runtime can schedule GPU work correctly.
 
-- Create an event and get a public link plus a one-time staff password.
-- Photograph found items one by one.
-- Let MiniCPM-V describe each item, including privacy notes when visible identifying text is present.
-- Review incoming claims with claimant-uploaded photos, transcript, summary, and candidate items.
-- Draft a safe message that asks for confirmation details rather than asserting ownership.
-- Record the final return only after offline confirmation.
+The model stack is intentionally small:
 
-For claimants, the app feels like a private intake conversation:
+- `openbmb/MiniCPM-V-4.6` captions found-item photos and claimant reference photos.
+- `openbmb/MiniCPM5-1B` supports claimant intake, staff-side comparison, and safe message drafting.
+- `nvidia/llama-nemotron-embed-vl-1b-v2` provides multilingual vision-language retrieval signals for larger inventories.
 
-- Open the event link.
-- Describe the item in their own language.
-- Upload a photo if they have one.
-- Save a resume link.
-- Receive staff messages without seeing the inventory or candidate list.
+All models are below the Build Small 32B cap. The deployed configuration uses open-weight local models with `LFD_MODEL_MODE=real` and `LFD_ALLOW_MOCK_FALLBACK=0`, so judge-facing validation exercises the real model path and makes runtime failures explicit.
 
-## Technical implementation
+## Privacy and Safety Boundary
 
-The backend is a Gradio Server app with FastAPI-style routes and Gradio API endpoints:
+The project treats a claim as a private capability link. A claimant who knows the event code and claim ID can continue that claim, so the resume URL is not public content. Staff item photos are served through staff-only routes, not as public static files.
 
-- `gradio.Server` hosts the app and model endpoints.
-- REST endpoints handle events, claims, uploads, staff auth, reports, and static frontend delivery.
-- `@app.api()` model endpoints keep ZeroGPU model calls inside Gradio's API path.
-- The frontend is Svelte 5 + Vite, compiled into `static/` so Hugging Face Spaces does not need a Node build step.
-- Event data is stored in a JSON store for the hackathon build; per-event staff passwords are salted PBKDF2 hashes.
-- Claim IDs are high-entropy capability tokens, so a resume link is treated as a secret.
-- OpenTelemetry instrumentation records model operations, durations, outcomes, and business counters.
+The claimant assistant is also constrained by an information boundary. It may ask open-ended questions about missing evidence, such as whether the item had a sticker, logo, label, scratch, or other distinctive mark. It should not introduce a specific detail from the private inventory before the claimant has mentioned it. This boundary keeps model assistance useful while limiting the chance that the conversation reveals the answer.
 
-Models:
+## Development and Codex
 
-- `openbmb/MiniCPM-V-4.6` for found-item and claimant-photo captions.
-- `openbmb/MiniCPM5-1B` for English claim intake, staff-side matching, and safe message drafting.
-- `nvidia/llama-nemotron-embed-vl-1b-v2` for cross-modal retrieval shortlisting.
+Codex helped move the project from prototype to submission-ready release. The final pass aligned the official Build Small requirements, README metadata, quest tags, deployment links, `.gitignore` hygiene, strict real-model defaults, ZeroGPU startup behavior, dependency compatibility with the current Spaces builder, and co-authored Git history for the Codex challenge. It also produced the article draft, X post draft, submission notes, and verification record used for final submission.
 
-All model dependencies stay below the Build Small 32B cap, and the default runtime uses local/open-weight models rather than hosted model APIs.
+Codex's most useful role was convergence: making failure states explicit, documenting the model/runtime choices, verifying public links, and keeping the hackathon package consistent across GitHub, Hugging Face Space, demo video, social post, and article materials.
 
-## Challenges
+## Limitations
 
-The first design temptation was to make the app more impressive than useful: segment a table photo into objects, add an OCR pipeline, build a broad embedding index, or let claimants see candidate matches. Each of those made the product riskier.
+The current build is designed for event-scale inventories, not long-term institutional archives. Retrieval can support larger candidate sets, but production use would need persistence beyond local JSON storage, stronger authentication, rate limiting, retention policies, and evaluation with real venue photos. Privacy behavior around visible names, badges, and access cards should also be tested with representative data before deployment in a live organization.
 
-The final build intentionally narrows the scope:
-
-- One item, one photo.
-- Caption-first instead of OCR-first.
-- Staff-only candidate review.
-- AI assistance without ownership decisions.
-- Explicit mock mode for tests, while real-model failures surface by default.
-
-The hardest product detail was claimant safety. A helpful assistant can accidentally leak inventory details by asking, "Did it have a white sticker?" before the claimant mentioned a sticker. Lost & Found Desk avoids that by using an inventory-aware planner that asks only for generic missing detail categories while the model never receives the inventory during claimant chat.
-
-## How Codex helped
-
-Codex helped turn the project from an app prototype into a hackathon-ready submission package:
-
-- Reviewed the official Build Small submission guide and tag generator.
-- Cleaned runtime defaults so the real model path is strict by default.
-- Checked `.gitignore` and kept runtime state, uploads, caches, and generated recording scratch files out of the repo.
-- Added submission documents, social copy, README tags, and quest notes.
-- Ran tests and deployment checks.
-- Prepared Codex-attributed commits for the OpenAI Codex challenge.
+Within the hackathon scope, the evidence is a working public deployment, a seeded demo event, tests for core claim and matching behavior, and a demo video that exercises the staff and claimant flows. The contribution is a compact operational pattern: small models can make lost-and-found work faster and safer when the system centers staff review, bounded disclosure, and offline confirmation.
 
 ## Links
 
-- Live Space: https://huggingface.co/spaces/build-small-hackathon/lost-found-desk
+- Hugging Face Space: https://huggingface.co/spaces/build-small-hackathon/lost-found-desk
 - App URL: https://build-small-hackathon-lost-found-desk.hf.space
 - Demo video: https://youtu.be/AsOM7K0tL-s
 - GitHub: https://github.com/JacobLinCool/Lost-n-Found-Desk
+- X post: https://x.com/JacobLinCool/status/2066147773481951378
