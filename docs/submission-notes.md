@@ -9,7 +9,7 @@ Official guide checked on 2026-06-14:
 
 - Live Space: https://huggingface.co/spaces/build-small-hackathon/lost-found-desk
 - App URL: https://build-small-hackathon-lost-found-desk.hf.space
-- Demo video: https://huggingface.co/spaces/build-small-hackathon/lost-found-desk/resolve/main/demo/lost-found-desk-demo.mp4
+- Demo video: https://youtu.be/AsOM7K0tL-s
 - GitHub repo: https://github.com/JacobLinCool/Lost-n-Found-Desk
 - Social post: pending manual publication; draft in `docs/social-post.md`
 
@@ -19,7 +19,7 @@ Official guide checked on 2026-06-14:
 | --- | --- | --- |
 | Every model under 32B parameters | Ready | MiniCPM-V 4.6, MiniCPM5-1B, and Nemotron Embed VL are all below the cap. |
 | Gradio app in official Build Small HF org | Ready after deploy verification | README front matter uses `sdk: gradio`; target Space is `build-small-hackathon/lost-found-desk`. |
-| Demo video | Ready after upload verification | Final video is stored at `demo/lost-found-desk-demo.mp4` and linked from README. |
+| Demo video | Ready | YouTube is the primary demo link; `demo/lost-found-desk-demo.mp4` remains in the repo as an archived copy. |
 | Social post | Needs manual action | Draft is ready in `docs/social-post.md`; user must publish and replace the README placeholder with the live URL. |
 | Zero GPU app limit | Ready | This is one ZeroGPU-targeted Space for the user; still verify account-level count before final form submission if multiple entries exist. |
 | README tags | Ready | README contains official tag schema: `track:*`, `sponsor:*`, `achievement:*`. |

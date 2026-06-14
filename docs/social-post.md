@@ -9,7 +9,7 @@ It is intentionally small: no public inventory photos, no ownership guesses, no 
 Codex helped harden the submission: official requirement checks, README tags, docs, deployment prep, tests, and Codex-attributed commits.
 
 Demo: https://build-small-hackathon-lost-found-desk.hf.space
-Video: https://huggingface.co/spaces/build-small-hackathon/lost-found-desk/resolve/main/demo/lost-found-desk-demo.mp4
+Video: https://youtu.be/AsOM7K0tL-s
 GitHub: https://github.com/JacobLinCool/Lost-n-Found-Desk
 Space: https://huggingface.co/spaces/build-small-hackathon/lost-found-desk
 

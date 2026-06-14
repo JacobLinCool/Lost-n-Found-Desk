@@ -22,7 +22,7 @@ tags:
 
 - **Live Space:** https://huggingface.co/spaces/build-small-hackathon/lost-found-desk
 - **App URL:** https://build-small-hackathon-lost-found-desk.hf.space
-- **Demo video:** https://huggingface.co/spaces/build-small-hackathon/lost-found-desk/resolve/main/demo/lost-found-desk-demo.mp4
+- **Demo video:** https://youtu.be/AsOM7K0tL-s
 - **GitHub:** https://github.com/JacobLinCool/Lost-n-Found-Desk
 - **Social post:** pending manual publication; draft is in [`docs/social-post.md`](docs/social-post.md).
 
