@@ -1,5 +1,9 @@
 # 失物櫃台：Caption-first 的活動場館失物歸還工作台
 
+- **Demo video:** https://youtu.be/AsOM7K0tL-s
+- **Live app:** https://build-small-hackathon-lost-found-desk.hf.space
+- **GitHub:** https://github.com/JacobLinCool/Lost-n-Found-Desk
+
 ## 一句話
 
 **失物櫃台讓活動場館、conference、健身房、共享空間、學校與前台人員，把「一件物品一張照片」的失物建檔流程變成可搜尋的歸還工作台；認領者透過私密對話補完整描述，工作人員在後台審核候選匹配並完成線下交還。**

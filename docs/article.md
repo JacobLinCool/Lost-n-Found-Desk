@@ -1,5 +1,9 @@
 # Lost & Found Desk: a caption-first return desk for real-world lost items
 
+- **Demo video:** https://youtu.be/AsOM7K0tL-s
+- **Live app:** https://build-small-hackathon-lost-found-desk.hf.space
+- **GitHub:** https://github.com/JacobLinCool/Lost-n-Found-Desk
+
 Lost & Found Desk is a small-model workflow for a problem every event venue eventually has: a table full of bottles, badges, chargers, jackets, keys, and bags, plus a stream of vague "I lost something" messages.
 
 The app turns that mess into a return desk. Staff photograph one found item at a time. MiniCPM-V writes a searchable caption. A claimant reports their lost item through a private assistant that asks only for missing details and can accept a photo of the claimant's own item. Staff then review candidate matches in a password-gated console, send safe follow-up messages, and record the offline handoff.
