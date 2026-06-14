@@ -1,0 +1,50 @@
+{
+  "public_artifacts": [
+    "artifact_type",
+    "name",
+    "url",
+    "repo_id"
+  ],
+  "session_summary": [
+    "project",
+    "thread_id_hash",
+    "source_session_digest",
+    "created_at",
+    "source_event_count",
+    "derived_turn_rows",
+    "derived_tool_event_rows",
+    "task_count",
+    "tool_counts",
+    "raw_log_policy"
+  ],
+  "tool_events": [
+    "project",
+    "thread_id_hash",
+    "source_session_digest",
+    "event_index",
+    "task_id",
+    "timestamp",
+    "event_type",
+    "tool_name",
+    "tool_category",
+    "summary",
+    "call_id_hash",
+    "exit_code",
+    "success",
+    "public_refs",
+    "privacy_level"
+  ],
+  "turns": [
+    "project",
+    "thread_id_hash",
+    "source_session_digest",
+    "turn_index",
+    "task_id",
+    "timestamp",
+    "role",
+    "summary",
+    "message_sha256",
+    "public_outputs",
+    "privacy_level"
+  ]
+}

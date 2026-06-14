@@ -3,6 +3,8 @@
 - **Demo video:** https://youtu.be/AsOM7K0tL-s
 - **Live app:** https://build-small-hackathon-lost-found-desk.hf.space
 - **GitHub:** https://github.com/JacobLinCool/Lost-n-Found-Desk
+- **Trace dataset:** https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces
+- **HF collection:** https://huggingface.co/collections/build-small-hackathon/lost-and-found-desk-6a2ec0551c48861e92dd8443
 
 ## 一句話
 

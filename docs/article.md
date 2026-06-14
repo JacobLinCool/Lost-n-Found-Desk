@@ -4,6 +4,8 @@
 - **Live app:** https://build-small-hackathon-lost-found-desk.hf.space
 - **GitHub:** https://github.com/JacobLinCool/Lost-n-Found-Desk
 - **Social post:** https://x.com/JacobLinCool/status/2066147773481951378
+- **Trace dataset:** https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces
+- **HF collection:** https://huggingface.co/collections/build-small-hackathon/lost-and-found-desk-6a2ec0551c48861e92dd8443
 
 Lost & Found Desk explores a narrow but common operational problem: how a temporary front desk can return lost objects while preserving private inventory evidence and reducing manual comparison work. Conferences, gyms, schools, coworking spaces, and community events all accumulate the same objects: bottles, chargers, badges, bags, jackets, keys, and small personal accessories. The work is ordinary, but it is also time-sensitive and privacy-sensitive. A claimant may say only "I lost a black bottle near room B," while staff may have dozens of visually similar objects to review.
 

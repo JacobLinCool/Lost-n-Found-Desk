@@ -12,6 +12,9 @@ Official guide checked on 2026-06-14:
 - Demo video: https://youtu.be/AsOM7K0tL-s
 - GitHub repo: https://github.com/JacobLinCool/Lost-n-Found-Desk
 - Social post: https://x.com/JacobLinCool/status/2066147773481951378
+- Article: https://huggingface.co/spaces/build-small-hackathon/lost-found-desk/blob/main/docs/article.md
+- Codex trace dataset: https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces
+- Hugging Face collection: https://huggingface.co/collections/build-small-hackathon/lost-and-found-desk-6a2ec0551c48861e92dd8443
 
 ## Official pre-flight checklist
 
@@ -24,6 +27,7 @@ Official guide checked on 2026-06-14:
 | Zero GPU app limit | Ready | This is one ZeroGPU-targeted Space for the user; still verify account-level count before final form submission if multiple entries exist. |
 | README tags | Ready | README contains official tag schema: `track:*`, `sponsor:*`, `achievement:*`. |
 | README story / tech write-up | Ready | README explains the problem, users, workflow, architecture, deployment, safety rules, and Codex assistance. |
+| Shared agent trace | Ready | Sanitized Codex trace dataset is published on the Hub; raw local logs, prompts, paths, and secrets are not published. |
 
 ## Quest and challenge eligibility
 
@@ -39,10 +43,10 @@ Official guide checked on 2026-06-14:
 | Well-Tuned | No | Use a fine-tuned model published on Hugging Face. | No fine-tuned model. |
 | Off-Brand | Yes | Custom UI beyond default Gradio. | Svelte UI served through Gradio Server. Tagged `achievement:offbrand`. |
 | Llama Champion | No | Model runs through llama.cpp. | Uses Transformers/Sentence Transformers, not llama.cpp. |
-| Sharing is Caring | No | Shared agent trace on the Hub. | No public agent trace prepared. |
+| Sharing is Caring | Yes | Shared agent trace on the Hub. | Sanitized trace dataset published at https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces and grouped in the collection. Tagged `achievement:sharing`. |
 | Field Notes | Yes | Blog/report about what was built and learned. | `docs/article.md`, this notes file, and `ARTICLE.md`. Tagged `achievement:fieldnotes`. |
 | Tiny Titan | Yes by prize-table criteria | Every model is <= 4B parameters. | Documented in README; official submit tag generator does not expose a `tiny` tag. |
-| Best Demo | Partially ready | Strong app + demo video + social post. | Demo video is ready; social post still needs manual publication. |
+| Best Demo | Ready | Strong app + demo video + social post. | Demo video and published X post are linked from README and notes. |
 | Best Agent | No / weak | Multi-step tool use and planning. | The app has planner-guided intake, but it is not primarily an agentic tool-use app. |
 
 ## Repository hygiene
@@ -54,9 +58,8 @@ Official guide checked on 2026-06-14:
 
 ## Remaining manual items
 
-- Social post has been published on X and linked from `README.md`.
 - Open the official submit page, enter `lost-found-desk`, verify tags, and submit the form.
 
 ## Final submission summary
 
-Lost & Found Desk is a caption-first lost-and-found return desk for event venues, conferences, gyms, schools, and coworking spaces. Staff photograph one item at a time; MiniCPM-V captions each item; claimants report lost items through a private multilingual assistant; MiniCPM5 and Nemotron Embed help staff narrow candidate matches; and staff confirm every handoff offline. It is a practical Backyard AI app with a custom Svelte UI on Gradio Server, no hosted model API dependency, all models below the 32B cap, and Codex-attributed development / submission commits.
+Lost & Found Desk is a caption-first lost-and-found return desk for event venues, conferences, gyms, schools, and coworking spaces. Staff photograph one item at a time; MiniCPM-V captions each item; claimants report lost items through a private multilingual assistant; MiniCPM5 and Nemotron Embed help staff narrow candidate matches; and staff confirm every handoff offline. It is a practical Backyard AI app with a custom Svelte UI on Gradio Server, no hosted model API dependency, all models below the 32B cap, Codex-attributed development commits, a public sanitized Codex trace dataset, and a Hugging Face collection that groups the Space, models, article link, and dataset.
