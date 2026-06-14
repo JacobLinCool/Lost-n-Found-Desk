@@ -5,6 +5,7 @@ import hashlib
 import json
 import re
 import shlex
+import shutil
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -21,6 +22,8 @@ DEMO_URL = "https://youtu.be/AsOM7K0tL-s"
 X_POST_URL = "https://x.com/JacobLinCool/status/2066147773481951378"
 DATASET_URL = "https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces"
 COLLECTION_URL = "https://huggingface.co/collections/build-small-hackathon/lost-and-found-desk-6a2ec0551c48861e92dd8443"
+HF_AGENT_TRACES_DOCS = "https://huggingface.co/docs/hub/en/agent-traces"
+HF_AGENT_TRACE_CHANGELOG = "https://huggingface.co/changelog/agent-trace-viewer"
 
 MODELS = [
     "openbmb/MiniCPM-V-4.6",
@@ -142,14 +145,43 @@ TOKEN_PATTERNS = [
     re.compile(r"github_pat_[A-Za-z0-9_]{20,}"),
 ]
 
-ABS_PATH = re.compile(r"/Users/jacoblincool/[^\s\"']+")
+SENSITIVE_LABELS = [
+    re.compile(r"github_pat_"),
+    re.compile(r"OPENAI_API_KEY"),
+    re.compile(r"HF_TOKEN"),
+    re.compile(r"Authorization"),
+    re.compile(r"BEGIN[^\n\r]{0,120}PRIVATE"),
+]
+
+ABS_PATH = re.compile(r"/Users/jacoblincool(?:/[^\s\"'`<>)]*)?")
 
 
-def redact_text(text: str) -> str:
-    text = ABS_PATH.sub("$LOCAL_PATH", text)
+def redact_text(text: str, counts: Counter[str] | None = None) -> str:
+    text, replacements = ABS_PATH.subn("$LOCAL_PATH", text)
+    if counts is not None:
+        counts["local_path"] += replacements
     for pattern in TOKEN_PATTERNS:
-        text = pattern.sub("[REDACTED_TOKEN]", text)
+        text, replacements = pattern.subn("[REDACTED_TOKEN]", text)
+        if counts is not None:
+            counts["token_shaped_string"] += replacements
+    for pattern in SENSITIVE_LABELS:
+        text, replacements = pattern.subn("[REDACTED_SECRET_LABEL]", text)
+        if counts is not None:
+            counts["secret_label"] += replacements
     return text
+
+
+def redact_value(value: Any, counts: Counter[str]) -> Any:
+    if isinstance(value, str):
+        return redact_text(value, counts)
+    if isinstance(value, list):
+        return [redact_value(item, counts) for item in value]
+    if isinstance(value, dict):
+        return {
+            redact_text(key, counts) if isinstance(key, str) else key: redact_value(item, counts)
+            for key, item in value.items()
+        }
+    return value
 
 
 def short_hash(value: str) -> str:
@@ -388,27 +420,25 @@ def build_dataset(rollout_path: Path, out_dir: Path, collection_url: str | None 
     }
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    data_dir = out_dir / "data"
-    data_dir.mkdir(parents=True, exist_ok=True)
+    for generated_child in ("data", "metadata", "traces"):
+        child = out_dir / generated_child
+        if child.exists():
+            shutil.rmtree(child)
+    schema_path = out_dir / "schema.json"
+    if schema_path.exists():
+        schema_path.unlink()
 
-    write_jsonl(data_dir / "turns.jsonl", turns)
-    write_jsonl(data_dir / "tool_events.jsonl", tool_events)
-    write_jsonl(data_dir / "session_summary.jsonl", [session_summary])
-    write_jsonl(data_dir / "public_artifacts.jsonl", PUBLIC_ARTIFACTS)
-    (out_dir / "schema.json").write_text(
-        json.dumps(
-            {
-                "turns": list(turns[0].keys()) if turns else [],
-                "tool_events": list(tool_events[0].keys()) if tool_events else [],
-                "session_summary": list(session_summary.keys()),
-                "public_artifacts": list(PUBLIC_ARTIFACTS[0].keys()),
-            },
-            indent=2,
-            sort_keys=True,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
+    redaction_report = write_official_codex_trace(rollout_path, out_dir)
+    session_summary["official_trace_path"] = redaction_report["trace_path"]
+    session_summary["official_trace_format"] = redaction_report["format"]
+    session_summary["raw_log_policy"] = "The published trace preserves Codex JSONL event schema for the official Hugging Face Agent Trace Viewer, with public redaction applied to local paths, token-shaped strings, and secret-label strings."
+
+    metadata_dir = out_dir / "metadata"
+    metadata_dir.mkdir(parents=True, exist_ok=True)
+    write_json(metadata_dir / "session_summary.json", session_summary)
+    write_json(metadata_dir / "public_artifacts.json", PUBLIC_ARTIFACTS)
+    write_json(metadata_dir / "derived_turns.json", turns)
+    write_json(metadata_dir / "redaction_report.json", redaction_report)
     (out_dir / "README.md").write_text(dataset_card(session_summary, collection_url), encoding="utf-8")
 
 
@@ -419,6 +449,45 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
     )
 
 
+def write_json(path: Path, value: Any) -> None:
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def codex_trace_relative_path(rollout_path: Path) -> Path:
+    parts = rollout_path.parts
+    if ".codex" in parts and "sessions" in parts:
+        session_root_index = parts.index("sessions")
+        return Path("traces", *parts[session_root_index + 1 :])
+    return Path("traces", rollout_path.name)
+
+
+def write_official_codex_trace(rollout_path: Path, out_dir: Path) -> dict[str, Any]:
+    destination = out_dir / codex_trace_relative_path(rollout_path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    counts: Counter[str] = Counter()
+    written = 0
+    with rollout_path.open("r", encoding="utf-8") as source, destination.open("w", encoding="utf-8") as target:
+        for line in source:
+            if not line.strip():
+                continue
+            event = json.loads(line)
+            target.write(json.dumps(redact_value(event, counts), ensure_ascii=False, sort_keys=False) + "\n")
+            written += 1
+    return {
+        "format": "codex-session-jsonl",
+        "hub_support": "Official Hugging Face Agent Traces viewer format.",
+        "trace_path": str(destination.relative_to(out_dir)),
+        "source_sha256": hashlib.sha256(rollout_path.read_bytes()).hexdigest(),
+        "released_sha256": hashlib.sha256(destination.read_bytes()).hexdigest(),
+        "source_lines": sum(1 for line in rollout_path.read_text(encoding="utf-8").splitlines() if line.strip()),
+        "released_lines": written,
+        "redaction_policy": "Preserve Codex JSONL event schema; redact local absolute paths, token-shaped values, and secret-label strings before public release.",
+        "redaction_counts": dict(sorted(counts.items())),
+        "official_docs": HF_AGENT_TRACES_DOCS,
+        "official_changelog": HF_AGENT_TRACE_CHANGELOG,
+    }
+
+
 def dataset_card(summary: dict[str, Any], collection_url: str | None = None) -> str:
     generated_at = datetime.now(timezone.utc).isoformat()
     collection_url = collection_url or COLLECTION_URL
@@ -427,8 +496,8 @@ def dataset_card(summary: dict[str, Any], collection_url: str | None = None) -> 
 license: mit
 pretty_name: Lost & Found Desk Codex Trace Dataset
 tags:
+  - agent-traces
   - codex
-  - agent-trace
   - build-small-hackathon
   - lost-found-desk
   - gradio
@@ -441,9 +510,9 @@ size_categories:
 
 # Lost & Found Desk Codex Trace Dataset
 
-This dataset is a sanitized trace artifact for the Codex-assisted Build Small hackathon submission of **Lost & Found Desk**.
+This dataset is an official-format Codex trace artifact for the Codex-assisted Build Small hackathon submission of **Lost & Found Desk**.
 
-It is derived from a local Codex Desktop rollout log, but it does **not** publish raw logs, full prompts, full tool outputs, system instructions, local absolute paths, or secrets. The released rows keep only task summaries, hashed source identifiers, tool-call metadata, public URLs, and verification evidence.
+It follows the Hugging Face Agent Traces guidance: Codex sessions are published as JSONL files under `traces/`, preserving the Codex session event schema so the Hub trace viewer can open the session. For public release, the trace is redacted in-place: local absolute paths, token-shaped strings, and secret-label strings are replaced while keeping the JSONL structure intact.
 
 ## Public Project Links
 
@@ -458,11 +527,11 @@ It is derived from a local Codex Desktop rollout log, but it does **not** publis
 
 ## Files
 
-- `data/turns.jsonl`: one derived row per user task and assistant completion.
-- `data/tool_events.jsonl`: sanitized metadata for tool calls and results.
-- `data/session_summary.jsonl`: aggregate counts and source digest.
-- `data/public_artifacts.jsonl`: public resources connected to the submission.
-- `schema.json`: column names for each split-like file.
+- `{summary["official_trace_path"]}`: Codex-compatible JSONL session trace for the Hugging Face Agent Trace Viewer.
+- `metadata/session_summary.json`: aggregate counts and source digest.
+- `metadata/public_artifacts.json`: public resources connected to the submission.
+- `metadata/derived_turns.json`: compact task-level summaries for quick review.
+- `metadata/redaction_report.json`: source/released digests and redaction counts.
 
 ## Provenance
 
@@ -472,14 +541,16 @@ It is derived from a local Codex Desktop rollout log, but it does **not** publis
 - Derived turn rows: `{summary["derived_turn_rows"]}`
 - Derived tool-event rows: `{summary["derived_tool_event_rows"]}`
 - Raw log policy: {summary["raw_log_policy"]}
+- Official trace docs: {HF_AGENT_TRACES_DOCS}
+- Changelog: {HF_AGENT_TRACE_CHANGELOG}
 
 ## Intended Use
 
-The dataset provides public evidence of the Codex-assisted submission workflow: requirement audit, deployment hardening, documentation, social/demo link updates, article revision, and verification. It is suitable for judging, reproducibility review, and lightweight study of agent-assisted release preparation.
+The dataset provides viewer-compatible public evidence of the Codex-assisted submission workflow: requirement audit, deployment hardening, documentation, social/demo link updates, article revision, trace publication, collection creation, and verification. It is suitable for judging, reproducibility review, and lightweight study of agent-assisted release preparation.
 
 ## Limitations
 
-This is not a full transcript. It is a privacy-preserving trace summary. It should not be used to reconstruct private prompts, local machine state, or complete model behavior.
+This is a public redacted trace, not a private forensic archive. It should not be used to reconstruct local machine state or secrets. The redaction preserves the Codex event schema but may replace private path and secret-marker text inside prompts, tool inputs, or tool outputs.
 """
 
 

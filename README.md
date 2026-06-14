@@ -27,7 +27,7 @@ tags:
 - **GitHub:** https://github.com/JacobLinCool/Lost-n-Found-Desk
 - **Social post:** https://x.com/JacobLinCool/status/2066147773481951378
 - **Article:** https://huggingface.co/spaces/build-small-hackathon/lost-found-desk/blob/main/docs/article.md
-- **Trace dataset:** https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces
+- **Trace dataset:** https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces (official HF Agent Traces / Codex JSONL format)
 - **HF collection:** https://huggingface.co/collections/build-small-hackathon/lost-and-found-desk-6a2ec0551c48861e92dd8443
 
 Lost & Found Desk is a **caption-first return desk** for conferences, event venues, gyms, coworking spaces, schools, and any front desk that accumulates forgotten bottles, badges, chargers, jackets, bags, keys, and accessories.
@@ -244,7 +244,7 @@ Requested official tags:
 - `sponsor:nvidia` — Nemotron Embed is used for multilingual cross-modal retrieval.
 - `achievement:offgrid` — the app does not depend on hosted model APIs.
 - `achievement:offbrand` — the UI is a compiled Svelte product surface served through `gradio.Server`, not stock Gradio components.
-- `achievement:sharing` — the public Codex trace dataset is on the Hub at https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces.
+- `achievement:sharing` — the public Codex trace dataset is on the Hub in the official HF Agent Traces / Codex JSONL format at https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces.
 - `achievement:fieldnotes` — the write-up and submission notes are in [`docs/article.md`](docs/article.md) and [`docs/submission-notes.md`](docs/submission-notes.md).
 
 The project also fits the prize-table spirit of **Tiny Titan** because every model is at or below roughly 4B parameters. The official README tag generator does not expose a `tiny` tag, so this is documented here instead of inventing a non-official tag.

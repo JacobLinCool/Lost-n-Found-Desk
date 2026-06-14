@@ -1,0 +1,17 @@
+{
+  "format": "codex-session-jsonl",
+  "hub_support": "Official Hugging Face Agent Traces viewer format.",
+  "official_changelog": "https://huggingface.co/changelog/agent-trace-viewer",
+  "official_docs": "https://huggingface.co/docs/hub/en/agent-traces",
+  "redaction_counts": {
+    "local_path": 1142,
+    "secret_label": 157,
+    "token_shaped_string": 0
+  },
+  "redaction_policy": "Preserve Codex JSONL event schema; redact local absolute paths, token-shaped values, and secret-label strings before public release.",
+  "released_lines": 2046,
+  "released_sha256": "1e8ba3f843dab310034be32258feb8fff463286180bbb63374f372a5fc1f2e96",
+  "source_lines": 2046,
+  "source_sha256": "1db62550a9be41a3823dae602c359880a402d6bd1d154f826829aacd1aa2940d",
+  "trace_path": "traces/2026/06/14/rollout-2026-06-14T20-33-08-019ec61f-1e93-79f1-a186-19bc0288e629.jsonl"
+}

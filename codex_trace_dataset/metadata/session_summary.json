@@ -1,0 +1,18 @@
+{
+  "created_at": "2026-06-14T12:33:08.783Z",
+  "derived_tool_event_rows": 1054,
+  "derived_turn_rows": 17,
+  "official_trace_format": "codex-session-jsonl",
+  "official_trace_path": "traces/2026/06/14/rollout-2026-06-14T20-33-08-019ec61f-1e93-79f1-a186-19bc0288e629.jsonl",
+  "project": "Lost & Found Desk",
+  "raw_log_policy": "The published trace preserves Codex JSONL event schema for the official Hugging Face Agent Trace Viewer, with public redaction applied to local paths, token-shaped strings, and secret-label strings.",
+  "source_event_count": 2046,
+  "source_session_digest": "1db62550a9be41a3",
+  "task_count": 9,
+  "thread_id_hash": "616075475841cf28",
+  "tool_counts": {
+    "tool.apply_patch": 37,
+    "tool.exec_command": 463,
+    "tool.write_stdin": 10
+  }
+}
