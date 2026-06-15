@@ -12,6 +12,7 @@ Official guide checked on 2026-06-14:
 - Demo video: https://youtu.be/AsOM7K0tL-s
 - GitHub repo: https://github.com/JacobLinCool/Lost-n-Found-Desk
 - Social post: https://x.com/JacobLinCool/status/2066147773481951378
+- Team HF usernames: [@JacobLinCool](https://huggingface.co/JacobLinCool)
 - Article: https://huggingface.co/spaces/build-small-hackathon/lost-found-desk/blob/main/docs/article.md
 - Codex trace dataset: https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces
 - Agent trace format reference: https://huggingface.co/changelog/agent-trace-viewer
@@ -25,6 +26,7 @@ Official guide checked on 2026-06-14:
 | Gradio app in official Build Small HF org | Ready after deploy verification | README front matter uses `sdk: gradio`; target Space is `build-small-hackathon/lost-found-desk`. |
 | Demo video | Ready | YouTube is the primary demo link; `demo/lost-found-desk-demo.mp4` remains in the repo as an archived copy. |
 | Social post | Ready | Published on X: https://x.com/JacobLinCool/status/2066147773481951378 |
+| Team HF usernames | Ready | README lists [@JacobLinCool](https://huggingface.co/JacobLinCool). |
 | Zero GPU app limit | Ready | This is one ZeroGPU-targeted Space for the user; still verify account-level count before final form submission if multiple entries exist. |
 | README tags | Ready | README contains official tag schema: `track:*`, `sponsor:*`, `achievement:*`. |
 | README story / tech write-up | Ready | README explains the problem, users, workflow, architecture, deployment, safety rules, and Codex assistance. |

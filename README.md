@@ -26,6 +26,7 @@ tags:
 - **Demo video:** https://youtu.be/AsOM7K0tL-s
 - **GitHub:** https://github.com/JacobLinCool/Lost-n-Found-Desk
 - **Social post:** https://x.com/JacobLinCool/status/2066147773481951378
+- **Team HF usernames:** [@JacobLinCool](https://huggingface.co/JacobLinCool)
 - **Article:** https://huggingface.co/spaces/build-small-hackathon/lost-found-desk/blob/main/docs/article.md
 - **Trace dataset:** https://huggingface.co/datasets/build-small-hackathon/lost-found-desk-codex-traces (official HF Agent Traces / Codex JSONL format)
 - **HF collection:** https://huggingface.co/collections/build-small-hackathon/lost-and-found-desk-6a2ec0551c48861e92dd8443
